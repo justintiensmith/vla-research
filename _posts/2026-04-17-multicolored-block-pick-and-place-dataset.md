@@ -11,10 +11,12 @@ To improve on that first dataset, we made three major changes. First, we reposit
 
 The new dataset includes four block colors, with each color picked up 50 times. Of those 50 episodes, 25 involve only the target block, while the other 25 include distractor blocks. Within those distractor episodes, 10 include one additional block, 10 include two additional blocks, and 5 include three additional blocks.
 
+<img src="{{ '/media/red-green-blue-yellow-blocks.JPG' | relative_url }}" alt="Our multicolored blocks" width="600">
+
 Each episode is paired with a language instruction corresponding to the target color. For example:
 
-Language instruction:
+**Language instruction:**  
 “Pick up the {blue, red, green, yellow} block and carefully place it in the black bin.”
 
-Our dataset is available on Hugging Face here:
-https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fmulticolour_block_pick_place%2Fepisode_0
+Our dataset is available on Hugging Face here:  
+[View the dataset](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fmulticolour_block_pick_place%2Fepisode_0)
