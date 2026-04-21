@@ -1,0 +1,119 @@
+---
+title: "SO-101 Setup and First VLA Experiments"
+date: 2026-04-10
+author: mattpidden
+---
+
+## Context
+
+This week was about getting a full end-to-end pipeline working: robot setup → data collection → training → real-world inference.
+
+The goal was simple: get a Vision-Language Action (VLA) model running on the SO-101 and see how quickly we could get *any* level of real-world performance on a basic pick-and-place task.
+
+## The Setup
+
+I set up the SO-101 robot arm and followed the LeRobot installation process to create the Python environment. The installation itself was mostly smooth, although getting everything working cleanly on the GPU cluster took some effort later on.
+
+After setup, I calibrated the arms (joint limits, motor ranges) using `lerobot-calibrate` CLI command and spent time teleoperating using the leader arm to get comfortable controlling the follower.
+
+## The Task
+
+The task was:
+
+> Pick up an apple and place it into a white ceramic bowl.
+
+Each episode consisted of a left-to-right pick-and-place motion, with some variation in object and target positions.
+
+## Dataset v1: 20 Episodes
+
+The initial dataset consisted of **20 teleoperated demonstrations**, collected using:
+
+- a wrist-mounted camera on the follower arm  
+- a world camera mounted above the workspace (top-down view)
+
+I initally started with just 20 demonstrations as I was under the impression that would suffice for a VLA to learn a task. You can view the dataset here:  
+https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_0
+
+The demonstrations were relatively unstructured, with moderate variation in object and target starting positions.
+
+## Training
+
+I fine-tuned **SmolVLA** using LeRobot.
+
+Training was done on Imperial’s GPU cluster using Slurm. This introduced some friction:
+- dependency issues during setup  
+- occasional out-of-memory errors  
+
+Eventually, I got training running on an A40 node via the LeRobot CLI with the following command and flags.
+```bash
+lerobot-train \
+  --dataset.repo_id=mattpidden/smol-vla-test-dataset \
+  --policy.path=lerobot/smolvla_base \
+  --output_dir=/vol/bitbucket/mdp25/outputs/smolvla2 \
+  --job_name=smolvla_training \
+  --batch_size=64 \
+  --steps 40000 \
+  --save_freq 1000 \
+  --policy.device=cuda \
+  --policy.repo_id=mattpidden/smolvla_apple_policy \
+  --rename_map='{"observation.images.claw": "observation.images.camera1", "observation.images.world": "observation.images.camera2"}'
+```
+
+For inference, I used a local RTX 4090 with the async server. Runtime performance was good (~0.1s per step), so latency was not a bottleneck.
+
+## Results (v1)
+
+Performance on the real robot was poor:
+
+- the robot consistently failed to grasp the apple  
+- often missed the object entirely  
+- when manually corrected into a grasp, it sometimes moved toward the bowl but dropped the object nearby  
+
+**Success rate: ~0%**
+
+That said, the behaviour wasn’t random. The model appeared to partially understand the task structure — moving toward the bowl after interacting with the object — but could not execute a reliable grasp.
+
+Grasping was clearly the main failure point.
+
+## Dataset v2: 50 Episodes
+
+After some further reading of other blogs posts I read that to improve performance I needed more and better data. I collected **30 additional episodes** (50 total), with a key change:
+
+- reduced task variability  
+- constrained apple and bowl positions to tighter regions  
+- more consistent demonstration trajectories  
+
+The goal was to increase demonstration density rather than diversity.
+
+## Results (v2)
+
+After fine-tuning on the expanded dataset:
+
+- **~30% success rate (3/10 trials)**  
+- a run was successful if the apple ended in the bowl within 60 seconds  
+
+This was a clear improvement over v1. The model began to complete the full task in some cases, although behaviour was still inconsistent.
+
+## What Changed?
+
+The main difference wasn’t just more data — it was *more consistent data*.
+
+By reducing spatial variability, the model was better able to learn precise grasp locations rather than a broad, under-specified policy.
+
+## Takeaways
+
+A few things became clear:
+
+- **20 demonstrations is not enough** for this task or policy  
+- **~50 demonstrations begins to produce usable behaviour**  
+- **grasping is the primary bottleneck**  
+- **dataset consistency matters more than raw diversity**  
+
+## Next Steps
+
+Next, I plan to:
+
+- improve the quality of grasp demonstrations  
+- increase dataset size further  
+- experiment with alternative policies (e.g. pi0.5, ACT)  
+- potentially adjust the camera setup and resolution  
