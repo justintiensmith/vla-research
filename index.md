@@ -1,6 +1,6 @@
 ---
 layout: home
-title: Vision-Language Action Models: Real-World Evaluation
+title: Vision-Language Action Models with Real-World Evaluation
 ---
 
 Welcome! We’re Justin and Matt, currently working on our MSc dissertations at Imperial College London.
