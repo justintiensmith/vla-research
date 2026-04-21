@@ -26,13 +26,21 @@ Each episode consisted of a left-to-right pick-and-place motion, with some varia
 
 ## Dataset v1: 20 Episodes
 
-The initial dataset consisted of **20 teleoperated demonstrations**, collected using:
+The initial dataset consisted of **20 teleoperated demonstrations**, collected using `lerobot-record` and:
 
 - a wrist-mounted camera on the follower arm  
 - a world camera mounted above the workspace (top-down view)
 
-I initally started with just 20 demonstrations as I was under the impression that would suffice for a VLA to learn a task. You can view the dataset here:  
-https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_0
+I initally started with just 20 demonstrations as I was under the impression that would suffice for a VLA to learn a task. You can view the full dataset [here](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_0).
+
+<video controls width="700">
+  <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/apple-dataset-timelapse.MOV" type="video/quicktime">
+</video>
+
+<video controls width="700">
+  <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/observation.images.world/chunk-000/file-000.mp4" type="video/mp4">
+</video>
+
 
 The demonstrations were relatively unstructured, with moderate variation in object and target starting positions.
 
