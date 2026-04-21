@@ -1,6 +1,10 @@
 ---
 layout: home
-title: Matt and Justin's VLA research blog
+title: Vision-Language Action Models with Real-World Evaluation
 ---
 
-Welcome to our blog! Our names are Justin and Matt, and we are currently doing research on Vision Language Action Models as part of our Master's Dissertations at Imperial College London. We plan on updating this blog as we do our research.
+Welcome! We’re Justin and Matt, currently working on our MSc dissertations at Imperial College London.
+
+Our research focuses on Vision-Language Action (VLA) models, with an emphasis on evaluating their performance in real-world settings using the SO-101 robotic arm.
+
+We’ll be sharing regular updates on our progress, experiments, and findings as the project evolves.

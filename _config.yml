@@ -1,4 +1,4 @@
 theme: minima
-title: Matt and Justin's VLA research blog
-description: This is where we post updates on our VLA research using the SO-101 robot arms.
-author: justintiensmith
+title: Vision-Language Action Models: Real-World Evaluation
+description: Weekly updates on our MSc dissertation exploring Vision-Language Action (VLA) models, with a focus on real-world benchmarking using the SO-101 robotic arm.
+author: justintiensmith & mattpidden
