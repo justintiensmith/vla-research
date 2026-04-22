@@ -3,7 +3,7 @@ layout: home
 title:
 ---
 
-Welcome! We’re Justin and Matt, currently working on our MSc dissertations at Imperial College London.
+Welcome! We’re [Justin](https://www.linkedin.com/in/justin-tien-smith/) and [Matt](https://github.com/mattpidden), currently working on our MSc dissertations at Imperial College London.
 
 Our research focuses on Vision-Language Action (VLA) models, with an emphasis on evaluating their performance in real-world settings using the SO-101 robotic arm.
 
