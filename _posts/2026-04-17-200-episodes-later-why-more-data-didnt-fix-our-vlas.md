@@ -2,22 +2,20 @@
 title: "200 Episodes Later: Why More Data Didn’t Fix Our VLAs"
 date: 2026-04-17
 author: justintiensmith & mattpidden
-excerpt: We collected a larger 200-episode dataset with better visual setup, but still observed the same grasping failures across all models — highlighting the importance of consistent actions over dataset scale.
+excerpt: We collected a larger 200 episode dataset with better visual setup, but still observed the same failures across all models, highlighting the importance of consistent actions over dataset scale.
 ---
 
 ## Context
 
-After our initial experiments with VLAs on the SO-101, we wanted to test a simple hypothesis:
+After our initial experiments with VLAs led to disappointment, we decided to run the setup again with a more controlled dataset. We made three key changes: the object was replaced with one better suited to our hardware, the number of demonstrations was significantly increased, and the world camera was repositioned to reduce occlusions during manipulation.
 
-> Would scaling up the dataset fix the grasping problem?
+The previous apple dataset (50 episodes) had already suggested that VLAs struggle with precise manipulation, particularly grasping. However, many successful VLA demos online show strong performance on much more complex tasks, so we wanted to test whether our limitations were simply due to *insufficient data scale*, *task-specific constraints*, or *poor visual setup*.
 
-The previous apple dataset (50 episodes) suggested that VLAs struggled with precise manipulation, especially grasping. However, most successful VLA demos online show strong performance on significantly harder tasks, so we wanted to investigate whether our limitation was simply *data scale*.
-
-This week, we collected a larger and more structured dataset using Duplo LEGO blocks.
+To investigate this, we collected a larger and more structured dataset using Duplo LEGO blocks.
 
 ## The Setup
 
-We replaced the apple with four coloured Duplo blocks (red, green, blue, yellow), which are more stable and consistent in shape and gripability.
+We replaced the apple with four coloured Duplo blocks (red, green, blue, yellow), which are more stable and consistent in shape, size, and gripability.
 
 We also made a key change to the visual setup:
 
@@ -26,7 +24,8 @@ We also made a key change to the visual setup:
 
 The goal was to improve both:
 - grasp consistency  
-- visual observability  
+- visual observability
+- and overall success rate
 
 ## New Dataset: 200 Episodes
 
@@ -59,18 +58,19 @@ Within each colour group, we also included variation in distractors to increase 
 
 ## Training Experiments
 
-We trained multiple policies on the dataset:
+To ensure the results were not an artefact of a specific policy or training setup, we trained multiple models under a range of configurations on the same dataset.
 
+We evaluated three policies:
 - SmolVLA  
 - ACT  
 - pi0.5  
 
-We varied:
-- training steps  
-- freezing configurations  
-- optimisation settings  
+Across these runs, we varied:
+- number of training steps  
+- which parts of the model were frozen during fine-tuning  
+- optimisation and training hyperparameters  
 
-Despite the larger dataset, training remained stable and loss curves were consistent with earlier runs.
+The goal was to test whether performance differences came from the dataset itself, rather than the choice of architecture or training recipe.
 
 ## Results
 
@@ -83,15 +83,15 @@ Across all models:
 - success rates stayed low (~30–40%)
 - the same failure pattern persisted: *miss → retry loop → failure*
 
-Increasing dataset size alone did not resolve the core issue.
+Increasing dataset size, removing occlusions from world camera, and changing the object did not resolve the core issue.
 
 ### Key observation: pi0.5 generalisation
 
 One notable exception was **pi0.5**, which showed a different behaviour pattern:
 
 - correctly followed language instructions including **colour conditioning**
-- successfully selected the correct block (even in cases with distractors)
-- generalised to colour prompts not explicitly seen in fine tuning data  
+- successfully selected the correct colour block (even in cases with distractors)
+- generalised to colour prompts not explicitly seen in fine tuning data
 
 However:
 - it still frequently failed at the grasping stage  
@@ -105,9 +105,9 @@ A few clear conclusions emerged:
 
 - **Scaling the dataset (50 → 200 episodes) did not fix the core issue**  
   More data alone was not sufficient to learn reliable grasping.
-
+  
 - **Consistency of actions is more important than dataset size**  
-  The lack of a single consistent grasping strategy likely limited learning across all models.
+  The lack of a single consistent grasping strategy likely limited learning across all models. In our dataset we unintentionally used multiple distinct grasping approaches. For example, in some episodes we rotated the wrist and approached the block in the horizontal plane (see [episode 120](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fmulticolour_block_pick_place%2Fepisode_120%3Ft%3D7)). In other cases, we approached vertically from above with the wrist camera offset to the side (see [episode 150](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fmulticolour_block_pick_place%2Fepisode_150%3Ft%3D19)). This variation in execution meant the policy was effectively learning multiple incompatible solutions to the same task, preventing it from converging on a precise and reliable grasp strategy.
 
 - **Failure is consistent across architectures**  
   SmolVLA, ACT, and pi0.5 all shared the same grasping bottleneck.
@@ -120,7 +120,7 @@ A few clear conclusions emerged:
 
 ## Overall Reflection
 
-Despite collecting a significantly larger dataset, this week felt like a partial step backwards in terms of progress.
+Despite collecting a significantly larger dataset, this week felt like a lack of progress.
 
 The models are clearly capable of learning:
 - general motion  
@@ -133,7 +133,7 @@ But they consistently fail at the same low-level skill: **precise grasping**.
 
 Based on these results, the next directions are:
 
-- enforce a **single consistent grasping strategy** during data collection  
+- enforce a **single consistent grasping strategy** during data collection (really important)  
 - revisit camera setup (possibly return to top-down but repositioned in front of robot)  
 - start some episodes with the robot arm in varying start states in increase recovery performance
 - investigate why pi0.5 shows better language grounding than other models  
@@ -141,4 +141,4 @@ Based on these results, the next directions are:
 
 The main takeaway is clear:
 
-> more data did not help — better data structure likely matters more.
+> more data did not help, we need consistent action demonstrations
