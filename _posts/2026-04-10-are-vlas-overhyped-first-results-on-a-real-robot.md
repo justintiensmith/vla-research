@@ -134,15 +134,13 @@ This was a clear improvement over v1. The model began to complete the full task 
   <video controls width="100%">
     <source src="https://huggingface.co/mattpidden/smolvla_apple_policy2/resolve/main/smolvla-apple-succeed.mp4" type="video/mp4">
   </video>
-    <p style="color: #666; font-size: 0.9em; margin-top: 8px;">
-    Example of successful task completion (v2, SmolVLA, 50 demos, 40k fine tuning steps)
-  </p>
+    <p style="color: #666; font-size: 0.9em;">Example of successful task completion (v2, SmolVLA, 50 demos, 40k fine tuning steps)</p>
 </div>
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
-  Example of failed task (v2, SmolVLA, 50 demos, 40k fine tuning steps)<br>
   <video controls width="100%">
     <source src="https://huggingface.co/mattpidden/smolvla_apple_policy2/resolve/main/smolvla-apple-fail.mp4" type="video/mp4">
   </video>
+  <p style="color: #666; font-size: 0.9em;">Example of failed task (v2, SmolVLA, 50 demos, 40k fine tuning steps)</p>
 </div>
 
 ## What Changed?
