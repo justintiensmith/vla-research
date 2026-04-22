@@ -19,9 +19,9 @@ After setup, I calibrated the arms (joint limits, motor ranges) using `lerobot-c
 
 ## The Task
 
-The task was:
+The task was to pick up an apple and place it into a white ceramic bowl. The language instruction I provided the VLAs was
 
-> Pick up an apple and place it into a white ceramic bowl.
+> Put the apple in the bowl
 
 Each episode consisted of a left-to-right pick-and-place motion, with some variation in object and target positions.
 
@@ -34,23 +34,28 @@ The initial dataset consisted of **20 teleoperated demonstrations**, collected u
 
 I initally started with just 20 demonstrations as I was under the impression that would suffice for a VLA to learn a task. You can view the full dataset [here](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_0).
 
-<video controls width="700">
-  <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/apple-dataset-timelapse.mp4" type="video/mp4">
-</video>
+<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
+  Timelapse of data collection process<br>
+  <video controls width="100%">
+    <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/apple-dataset-timelapse.mp4" type="video/mp4">
+  </video>
+</div>
 
-<iframe
-  src="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_1%3Ft%3D8"
-  width="100%"
-  height="600"
-  frameborder="0">
-</iframe>
+<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
+  View of world camera during data collection <br>
+  <video controls width="100%">
+    <source src="[https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/apple-dataset-timelapse.mp4](https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/observation.images.world/chunk-000/file-000.mp4)" type="video/mp4">
+  </video>
+</div>
 
-<video controls width="700">
-  <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/observation.images.world/chunk-000/file-000.mp4" type="video/mp4">
-</video>
+<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
+  View of claw camera data collection <br>
+  <video controls width="100%">
+    <source src="[https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/apple-dataset-timelapse.mp4](https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/observation.images.claw/chunk-000/file-001.mp4)" type="video/mp4">
+  </video>
+</div>
 
-
-The demonstrations were relatively unstructured, with moderate variation in object and target starting positions.
+The demonstrations were unstructured, with moderate variation in object and target starting positions.
 
 ## Training
 
@@ -75,9 +80,8 @@ lerobot-train \
   --rename_map='{"observation.images.claw": "observation.images.camera1", "observation.images.world": "observation.images.camera2"}'
 ```
 
-For inference, I used a local RTX 4090 with the async server. Runtime performance was good (~0.1s per step), so latency was not a bottleneck.
-
 ## Results (v1)
+For inference, I used a local RTX 4090 with a LeRobot async server and a chunk size of 50 with threshold of 0.5. Runtime performance was good (~0.1s per chunk), so latency was not a bottleneck.
 
 Performance on the real robot was poor:
 
@@ -111,28 +115,17 @@ After fine-tuning on the expanded dataset:
 This was a clear improvement over v1. The model began to complete the full task in some cases, although behaviour was still inconsistent.
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
-  <strong>Example of successful task completion (v2, SmolVLA, 50 demos, 40k fine tuning steps)</strong><br><br>
+  Example of successful task completion (v2, SmolVLA, 50 demos, 40k fine tuning steps)<br>
   <video controls width="100%">
     <source src="https://huggingface.co/mattpidden/smolvla_apple_policy2/resolve/main/smolvla-apple-succeed.mp4" type="video/mp4">
   </video>
-  <p style="margin-top: 8px;">
-    The model successfully picks up the apple and places it into the bowl.
-  </p>
 </div>
-
-
-<figure>
-  <video controls width="700">
-    <source src="https://huggingface.co/mattpidden/smolvla_apple_policy2/resolve/main/smolvla-apple-succeed.mp4" type="video/mp4">
-  </video>
-  <figcaption>Example of successful task completiion (v2)</figcaption>
-</figure>
-<figure>
-  <video controls width="700">
+<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
+  Example of failed task (v2, SmolVLA, 50 demos, 40k fine tuning steps)<br>
+  <video controls width="100%">
     <source src="https://huggingface.co/mattpidden/smolvla_apple_policy2/resolve/main/smolvla-apple-fail.mp4" type="video/mp4">
   </video>
-  <figcaption>Example of failed task (v2)</figcaption>
-</figure>
+</div>
 
 ## What Changed?
 
@@ -149,8 +142,7 @@ To better understand whether the limitations were specific to SmolVLA or more ge
 I first trained **pi0.5**. I initially attempted to fine-tune pi0 and pi0-fast, but ran into issues getting them to train correctly, so moved to pi0.5, which is also expected to generalise better.
 
 Training was done with the following key flags:
-```
-bash
+```bash
 --freeze_vision_encoder=false
 --train_expert_only=true
 --steps=40000
@@ -215,7 +207,7 @@ A more favourable setup might include:
 A few key insights emerged from these experiments:
 
 - **Few-shot performance is overstated in practice**  
-  20 demonstrations were not sufficient to learn this task. Even at 50 demonstrations, performance remained inconsistent. VLAs did not exhibit strong few-shot behaviour in this real-world setting.
+  20 demonstrations were not sufficient to learn this task. Even at 50 demonstrations, performance remained inconsistent. VLAs did not exhibit strong few-shot behaviour in this real-world setting. I was genuinely surprised at the poor performance. Online video demonstrations led me to belive VLAs could achieve high success rates with minimal fine tuning for simple task and generalise easily.
 
 - **Grasping is the dominant bottleneck**  
   Across all policies (SmolVLA, pi0.5, ACT), failure was almost always due to inaccurate grasping. Once the object was successfully picked up, task completion was likely.
