@@ -51,24 +51,23 @@ The initial dataset consisted of **20 teleoperated demonstrations**, collected u
 I initally started with just 20 demonstrations as I was under the impression that would suffice for a VLA to learn a task. You can view the full dataset [here](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_0).
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
-  Timelapse of data collection process<br>
   <video controls width="100%">
     <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/apple-dataset-timelapse.mp4" type="video/mp4">
   </video>
+  <p style="color: #666; font-size: 0.9em; margin: 0 0 0 0;">Timelapse of data collection process</p>
 </div>
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
-  World camera during data collection (note the occlusions of apple) <br>
   <video controls width="100%">
     <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/observation.images.world/chunk-000/file-000.mp4" type="video/mp4">
-  </video>
+  </video>  
+  <p style="color: #666; font-size: 0.9em; margin: 0 0 0 0;">World camera view (note the occlusions of apple)</p>
 </div>
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
-  Claw camera during data collection <br>
   <video controls width="100%">
     <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/observation.images.claw/chunk-000/file-001.mp4" type="video/mp4">
-  </video>
+  </video>  <p style="color: #666; font-size: 0.9em; margin: 0 0 0 0;">Claw camera view</p>
 </div>
 
 The demonstrations were unstructured, with moderate variation in object and target starting positions.
@@ -134,13 +133,13 @@ This was a clear improvement over v1. The model began to complete the full task 
   <video controls width="100%">
     <source src="https://huggingface.co/mattpidden/smolvla_apple_policy2/resolve/main/smolvla-apple-succeed.mp4" type="video/mp4">
   </video>
-    <p style="color: #666; font-size: 0.9em;">Example of successful task completion (v2, SmolVLA, 50 demos, 40k fine tuning steps)</p>
+    <p style="color: #666; font-size: 0.9em; margin: 0 0 0 0;">Example of successful task completion (v2, SmolVLA, 50 demos, 40k fine tuning steps)</p>
 </div>
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
     <source src="https://huggingface.co/mattpidden/smolvla_apple_policy2/resolve/main/smolvla-apple-fail.mp4" type="video/mp4">
   </video>
-  <p style="color: #666; font-size: 0.9em;">Example of failed task (v2, SmolVLA, 50 demos, 40k fine tuning steps)</p>
+  <p style="color: #666; font-size: 0.9em; margin: 0 0 0 0;">Example of failed task (v2, SmolVLA, 50 demos, 40k fine tuning steps)</p>
 </div>
 
 ## What Changed?
