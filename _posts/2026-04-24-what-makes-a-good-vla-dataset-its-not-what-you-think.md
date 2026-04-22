@@ -28,10 +28,6 @@ Another insight was around **curriculum-style data collection**:
 - start with low-variance, highly consistent demonstrations  
 - then gradually introduce variation through further fine-tuning  
 
-This is something we had not explored yet.
-
----
-
 A second important reference was the LeRobot team’s work on robot folding:
 
 > “Flashy demos of robotic systems are popping up… but we typically don’t know how these systems were actually built and trained.”
@@ -50,35 +46,13 @@ This directly mirrors our experience:
 - more data alone did not improve performance  
 - **data quality and consistency mattered significantly more**
 
----
-
-## Rethinking Our Setup
-
-We also identified issues in our own system:
+We identified issues in our own system:
 
 - inconsistent grasping strategies across demonstrations  
 - suboptimal camera placement (wrist camera mounted on the side rather than top)  
 - lack of a structured approach to dataset design  
 
-More broadly, we began questioning the gap between:
 
-- **public VLA demos (high performance, complex tasks)**  
-- **our results (low success on simple tasks)**  
-
-In most VLA demos online, key details are missing:
-- number of training episodes  
-- training steps / compute used  
-- whether models are task-specific or general  
-
-While VLAs promise generalisation, in practice they appear to require significant amounts of carefully structured task specific data.
-
-This was surprising, particularly given that:
-- classical imitation learning  
-- and reinforcement learning  
-
-can often learn similar pick-and-place tasks with far fewer demonstrations.
-
-At this stage, we are not yet convinced VLAs deliver on their full promise, but this is exactly what we aim to test.
 
 ## Experimental Setup
 
@@ -106,14 +80,6 @@ We collected two new datasets with **100 episodes each**, keeping:
   <p style="color: #666; font-size: 0.9em; margin: 0;">World camera view (dataset 1)</p>
 </div>
 
-<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
-  <video controls width="100%">
-    <source src="https://huggingface.co/datasets/justintiensmith/multicolour_block_pick_place_2/resolve/main/videos/observation.images.wrist/chunk-000/file-000.mp4" type="video/mp4">
-  </video>
-  <p style="color: #666; font-size: 0.9em; margin: 0;">Wrist camera view (dataset 1)</p>
-</div>
-
----
 
 ### Dataset 2: High Variance (Generalisation-Focused)
 
@@ -131,22 +97,9 @@ We collected two new datasets with **100 episodes each**, keeping:
   <p style="color: #666; font-size: 0.9em; margin: 0;">World camera view (dataset 2)</p>
 </div>
 
-<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
-  <video controls width="100%">
-    <source src="https://huggingface.co/datasets/mattpidden/precise_multicolour_block_pick_place/resolve/main/videos/observation.images.wrist/chunk-000/file-006.mp4" type="video/mp4">
-  </video>
-  <p style="color: #666; font-size: 0.9em; margin: 0;">Wrist camera view (dataset 2)</p>
-</div>
 
----
 
-Across both datasets, we enforced a **single consistent grasping strategy**:
-- horizontal approach  
-- wide gripper opening  
-- wrist camera mounted on top  
-- consistent motion across all demonstrations  
-
-## Training Plan
+## Training
 
 We trained pi0.5 under five different conditions:
 
@@ -161,26 +114,37 @@ This allows us to test:
 - data mixing vs staged training  
 - effects of curriculum-style learning  
 
-## Training Parameters for Pi0.5
+Training Parameters for Pi0.5 (TODO)
 
-TODO
 
-## Initial Results 
+
+## Results 
 
 ### Model A
 
 The first result, trained on **Dataset 1 only (low variance)**, was very revealing:
 
 - **100% success rate** on in-distribution tasks  
-- **0% success rate** on out-of-distribution spatial setups  
+- **0% success rate** on out-of-distribution spatial setups
+
+<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
+  <video controls width="100%">
+    <source src="https://huggingface.co/mattpidden/pi05_5k_multicolour_block_pick_place_2/resolve/main/model_a_indist.mp4" type="video/mp4">
+  </video>
+  <p style="color: #666; font-size: 0.9em; margin: 0;">Example of in-distribution task success (model A)</p>
+</div>
+<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
+  <video controls width="100%">
+    <source src="https://huggingface.co/mattpidden/pi05_5k_multicolour_block_pick_place_2/resolve/main/model_a_outdist.mp4" type="video/mp4">
+  </video>
+  <p style="color: #666; font-size: 0.9em; margin: 0;">Example of out-of-distribution task failure (model A)</p>
+</div>
 
 The model learned:
 - precise grasping within the constrained region  
 - reliable execution of the full task  
 
 However, it completely failed to generalise beyond that region.
-
-#### Additional observations
 
 - replacing the block with a different colour → still grasped successfully  
 - introducing multiple blocks → model often selected randomly  
@@ -190,4 +154,10 @@ However, it completely failed to generalise beyond that region.
 This suggests:
 - strong spatial overfitting  
 - partial task understanding  
-- limited but non-trivial recovery behaviour  
+- limited but non-trivial recovery behaviour
+
+### Model B
+### Model C
+### Model D
+### Model E
+
