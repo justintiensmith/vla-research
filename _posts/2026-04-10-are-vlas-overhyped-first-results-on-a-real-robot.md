@@ -11,15 +11,31 @@ This week was about getting a full end-to-end pipeline working: robot setup → 
 
 The goal was simple: get a Vision-Language Action (VLA) model running on the SO-101 and see how quickly we could get *any* level of real-world performance on a basic pick-and-place task.
 
+<div style="border-left: 4px solid #4a90e2; background: #f7f9fc; padding: 12px 16px; margin: 20px 0; border-radius: 6px;">
+  <strong>What is a Vision-Language Action (VLA) model?</strong>
+  <p style="margin-top: 8px;">
+    A VLA is an AI model that takes in images (vision) and a natural language instruction (ie. place apple in bowl), and outputs actions for a robot to execute. 
+    Instead of explicitly programming the behaviour, the model learns from demonstrations how to map 
+    <em>(what it sees + what it’s told)</em> → <em>what to do next</em>.
+  </p>
+  <p style="margin-top: 8px;">
+    What makes VLAs particularly interesting is that they build on large pretrained vision and language models, allowing them to generalise across tasks and instructions in ways that traditional imitation learning, reinforcement learning, or classical planning-based robotics systems typically cannot without significant task-specific engineering.
+  </p>
+  <p style="margin-top: 8px;">
+    In practice, this means collecting teleoperated examples of a task (e.g. pick-and-place), then fine-tuning a pretrained model 
+    so it can generalise that behaviour to new situations it's never seen before.
+  </p>
+</div>
+
 ## The Setup
 
-I set up the SO-101 robot arm and followed the LeRobot installation process to create the Python environment. The installation itself was mostly smooth, although getting everything working cleanly on the GPU cluster took some effort later on.
+I set up the open source [SO-101 robot arm](https://huggingface.co/docs/lerobot/en/so101) and followed the LeRobot installation process to create the Python environment. The installation itself was mostly smooth, although getting everything working cleanly on the GPU cluster took some effort later on.
 
 After setup, I calibrated the arms (joint limits, motor ranges) using `lerobot-calibrate` CLI command and spent time teleoperating using the leader arm to get comfortable controlling the follower.
 
 ## The Task
 
-The task was to pick up an apple and place it into a white ceramic bowl. The language instruction I provided the VLAs was
+The task was to pick up an apple and place it into a white ceramic bowl. The language instruction I provided the VLAs with was:
 
 > Put the apple in the bowl
 
@@ -42,16 +58,16 @@ I initally started with just 20 demonstrations as I was under the impression tha
 </div>
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
-  View of world camera during data collection <br>
+  World camera during data collection (note the occlusions of apple) <br>
   <video controls width="100%">
-    <source src="[https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/apple-dataset-timelapse.mp4](https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/observation.images.world/chunk-000/file-000.mp4)" type="video/mp4">
+    <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/observation.images.world/chunk-000/file-000.mp4" type="video/mp4">
   </video>
 </div>
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
-  View of claw camera data collection <br>
+  Claw camera during data collection <br>
   <video controls width="100%">
-    <source src="[https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/apple-dataset-timelapse.mp4](https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/observation.images.claw/chunk-000/file-001.mp4)" type="video/mp4">
+    <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/observation.images.claw/chunk-000/file-001.mp4" type="video/mp4">
   </video>
 </div>
 
@@ -115,10 +131,12 @@ After fine-tuning on the expanded dataset:
 This was a clear improvement over v1. The model began to complete the full task in some cases, although behaviour was still inconsistent.
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
-  Example of successful task completion (v2, SmolVLA, 50 demos, 40k fine tuning steps)<br>
   <video controls width="100%">
     <source src="https://huggingface.co/mattpidden/smolvla_apple_policy2/resolve/main/smolvla-apple-succeed.mp4" type="video/mp4">
   </video>
+    <p style="color: #666; font-size: 0.9em; margin-top: 8px;">
+    Example of successful task completion (v2, SmolVLA, 50 demos, 40k fine tuning steps)
+  </p>
 </div>
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   Example of failed task (v2, SmolVLA, 50 demos, 40k fine tuning steps)<br>
@@ -184,9 +202,7 @@ If the object was successfully grasped:
 - placing into the bowl was usually successful  
 - overall task success became highly likely  
 
-In practice, this means:
-
-> the first grasp attempt largely determines the outcome of the entire episode
+In practice, this means the first grasp attempt largely determines the outcome of the entire episode
 
 ## Hypotheses
 
