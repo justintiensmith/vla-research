@@ -1,7 +1,8 @@
 ---
-title: "SO-101 Setup and First VLA Experiments"
+title: "Are VLAs Overhyped? First Results on a Real Robot"
 date: 2026-04-10
 author: mattpidden
+excerpt: Initial real-world experiments with VLAs on the SO-101, exploring the gap between few-shot expectations and practical performance.
 ---
 
 ## Context
