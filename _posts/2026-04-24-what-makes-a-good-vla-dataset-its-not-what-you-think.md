@@ -1,0 +1,193 @@
+---
+title: "What Makes a Good VLA Dataset? (It’s Not What You Think)"
+date: 2026-04-24
+author: justintiensmith & mattpidden
+excerpt: After repeated failures, we shifted focus from models to data, empirically testing how dataset structure, consistency, and variance affect VLA performance.
+---
+
+## Context
+
+After several weeks of disappointing results with VLAs, we took a step back.
+
+Rather than continuing to tweak models or scale datasets blindly, we wanted to understand a more fundamental question:
+
+> Are our failures due to the models or the data?
+
+To answer this, we spent time reviewing papers, blog posts, and real world implementations of VLAs to better understand what we might be missing.
+
+## What We Learned from Existing Work
+
+One particularly useful reference was [ggando’s SO-101 SmolVLA blog](https://ggando.com/blog/smolvla-so101/), which highlighted two key ideas:
+
+- **consistent demonstrations are critical**  
+- **limiting workspace variance helps learn precision tasks like grasping**
+
+This immediately stood out. In our previous datasets, we had used multiple grasping strategies within the same dataset, which likely made learning unstable.
+
+Another insight was around **curriculum-style data collection**:
+- start with low-variance, highly consistent demonstrations  
+- then gradually introduce variation through further fine-tuning  
+
+This is something we had not explored yet.
+
+---
+
+A second important reference was the LeRobot team’s work on robot folding:
+
+> “Flashy demos of robotic systems are popping up… but we typically don’t know how these systems were actually built and trained.”
+
+We strongly agree with this.
+
+What stood out most was the scale and process behind their results:
+
+- **5,688 episodes (131 hours)** of teleoperation collected which turned out to be mostly poor quality demos
+- a new dataset of **~1,200 high-quality episodes (30 hours)** for final training  
+- performance only improved after enforcing **consistent action strategies across operators**
+
+Even then, large amounts of data were required to achieve high success rates.
+
+This directly mirrors our experience:
+- more data alone did not improve performance  
+- **data quality and consistency mattered significantly more**
+
+---
+
+## Rethinking Our Setup
+
+We also identified issues in our own system:
+
+- inconsistent grasping strategies across demonstrations  
+- suboptimal camera placement (wrist camera mounted on the side rather than top)  
+- lack of a structured approach to dataset design  
+
+More broadly, we began questioning the gap between:
+
+- **public VLA demos (high performance, complex tasks)**  
+- **our results (low success on simple tasks)**  
+
+In most VLA demos online, key details are missing:
+- number of training episodes  
+- training steps / compute used  
+- whether models are task-specific or general  
+
+While VLAs promise generalisation, in practice they appear to require significant amounts of carefully structured task specific data.
+
+This was surprising, particularly given that:
+- classical imitation learning  
+- and reinforcement learning  
+
+can often learn similar pick-and-place tasks with far fewer demonstrations.
+
+At this stage, we are not yet convinced VLAs deliver on their full promise, but this is exactly what we aim to test.
+
+## Experimental Setup
+
+To isolate the effect of **dataset structure**, we designed a controlled experiment using a single policy: **pi0.5** (which had shown the most promising behaviour so far).
+
+We collected two new datasets with **100 episodes each**, keeping:
+- identical hardware  
+- identical grasping strategy  
+- consistent lighting conditions  
+- same camera setup (wrist + world camera)
+
+### Dataset 1: Low Variance (Precision-Focused)
+
+- single object: red block  
+- fixed target bin  
+- block constrained to a **10cm × 10cm region**  
+- highly consistent demonstrations  
+
+[View Dataset 1](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fmulticolour_block_pick_place_2%2Fepisode_0)
+
+<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
+  <video controls width="100%">
+    <source src="https://huggingface.co/datasets/justintiensmith/multicolour_block_pick_place_2/resolve/main/videos/observation.images.world/chunk-000/file-000.mp4" type="video/mp4">
+  </video>
+  <p style="color: #666; font-size: 0.9em; margin: 0;">World camera view (dataset 1)</p>
+</div>
+
+<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
+  <video controls width="100%">
+    <source src="https://huggingface.co/datasets/justintiensmith/multicolour_block_pick_place_2/resolve/main/videos/observation.images.wrist/chunk-000/file-000.mp4" type="video/mp4">
+  </video>
+  <p style="color: #666; font-size: 0.9em; margin: 0;">Wrist camera view (dataset 1)</p>
+</div>
+
+---
+
+### Dataset 2: High Variance (Generalisation-Focused)
+
+- 4 block colours (25 episodes each)  
+- varying object positions  
+- moving target bin (approx in 20cm × 20cm region)  
+- increased task diversity  
+
+[View Dataset 2](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fprecise_multicolour_block_pick_place%2Fepisode_23)
+
+<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
+  <video controls width="100%">
+    <source src="https://huggingface.co/datasets/mattpidden/precise_multicolour_block_pick_place/resolve/main/videos/observation.images.world/chunk-000/file-006.mp4" type="video/mp4">
+  </video>
+  <p style="color: #666; font-size: 0.9em; margin: 0;">World camera view (dataset 2)</p>
+</div>
+
+<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
+  <video controls width="100%">
+    <source src="https://huggingface.co/datasets/mattpidden/precise_multicolour_block_pick_place/resolve/main/videos/observation.images.wrist/chunk-000/file-006.mp4" type="video/mp4">
+  </video>
+  <p style="color: #666; font-size: 0.9em; margin: 0;">Wrist camera view (dataset 2)</p>
+</div>
+
+---
+
+Across both datasets, we enforced a **single consistent grasping strategy**:
+- horizontal approach  
+- wide gripper opening  
+- wrist camera mounted on top  
+- consistent motion across all demonstrations  
+
+## Training Plan
+
+We trained pi0.5 under five different conditions:
+
+- **A)** trained on Dataset 1 only  
+- **B)** trained on Dataset 2 only  
+- **C)** trained on the union of both datasets  
+- **D)** trained on Dataset 1 → then fine-tuned on Dataset 2  
+- **E)** trained on Dataset 2 → then fine-tuned on Dataset 1  
+
+This allows us to test:
+- precision vs generalisation  
+- data mixing vs staged training  
+- effects of curriculum-style learning  
+
+## Training Parameters for Pi0.5
+
+TODO
+
+## Initial Results 
+
+### Model A
+
+The first result, trained on **Dataset 1 only (low variance)**, was very revealing:
+
+- **100% success rate** on in-distribution tasks  
+- **0% success rate** on out-of-distribution spatial setups  
+
+The model learned:
+- precise grasping within the constrained region  
+- reliable execution of the full task  
+
+However, it completely failed to generalise beyond that region.
+
+#### Additional observations
+
+- replacing the block with a different colour → still grasped successfully  
+- introducing multiple blocks → model often selected randomly  
+- if the wrong block was picked first:
+  - the model recovered and completed the correct task of picking the red block
+
+This suggests:
+- strong spatial overfitting  
+- partial task understanding  
+- limited but non-trivial recovery behaviour  
