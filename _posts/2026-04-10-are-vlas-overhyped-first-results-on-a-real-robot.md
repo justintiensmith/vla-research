@@ -2,7 +2,7 @@
 title: "Are VLAs Overhyped? First Results on a Real Robot"
 date: 2026-04-10
 author: mattpidden
-excerpt: Initial real-world experiments with VLAs on the SO-101, exploring the gap between few-shot expectations and practical performance.
+excerpt: Early experiments with VLAs on a real robot suggest few-shot learning is overstated, with performance heavily dependent on data quality.
 ---
 
 ## Context
@@ -37,6 +37,13 @@ I initally started with just 20 demonstrations as I was under the impression tha
 <video controls width="700">
   <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/apple-dataset-timelapse.mp4" type="video/mp4">
 </video>
+
+<iframe
+  src="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_1%3Ft%3D8"
+  width="100%"
+  height="600"
+  frameborder="0">
+</iframe>
 
 <video controls width="700">
   <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/observation.images.world/chunk-000/file-000.mp4" type="video/mp4">
@@ -102,6 +109,17 @@ After fine-tuning on the expanded dataset:
 - a run was classified as successful if the apple ended in the bowl within 60 seconds  
 
 This was a clear improvement over v1. The model began to complete the full task in some cases, although behaviour was still inconsistent.
+
+<div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
+  <strong>Example of successful task completion (v2, SmolVLA, 50 demos, 40k fine tuning steps)</strong><br><br>
+  <video controls width="100%">
+    <source src="https://huggingface.co/mattpidden/smolvla_apple_policy2/resolve/main/smolvla-apple-succeed.mp4" type="video/mp4">
+  </video>
+  <p style="margin-top: 8px;">
+    The model successfully picks up the apple and places it into the bowl.
+  </p>
+</div>
+
 
 <figure>
   <video controls width="700">
@@ -182,9 +200,9 @@ In practice, this means:
 
 There are several possible reasons for the poor grasping performance:
 
-- the apple is relatively large, requiring the gripper to fully open  
+- the apple is relatively large, requiring the gripper to fully open and align with precision 
 - the surface is reflective, introducing visual ambiguity  
-- the top-down camera provides limited depth information  
+- the object is often ocluded by the robot arm in the top-down camera view, limiting its ability to provide useful information
 
 A more favourable setup might include:
 
@@ -207,28 +225,3 @@ A few key insights emerged from these experiments:
 
 - **Policy choice affects behaviour, but not failure mode**  
   Different models produced noticeably different motion styles (e.g. smooth vs jittery), but all suffered from the same underlying grasping issue.
-
-## Next Steps
-
-Based on these findings, the next phase will focus on improving grasp reliability rather than scaling model complexity.
-
-Planned directions include:
-
-- **Improve demonstration quality**  
-  Focus on more precise and consistent grasping trajectories during data collection.
-
-- **Change the task setup**  
-  - use a smaller, less reflective object  
-  - adjust object placement for easier grasping  
-  - introduce an angled camera to improve depth cues  
-
-- **Increase dataset size**  
-  Collect more demonstrations once the setup is improved, to reinforce reliable grasp behaviour.
-
-- **Explore alternative policies**  
-  Continue experimenting with different architectures (e.g. pi0.5, ACT) under improved data conditions.
-
-- **Investigate perception limitations**  
-  Evaluate whether RGB-only input is sufficient, or if depth (RGB-D) is needed for reliable grasping.
-
-The immediate priority is improving the success rate of the first grasp attempt, as this appears to be the key limiting factor across all experiments.
