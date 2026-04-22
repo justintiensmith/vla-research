@@ -1,6 +1,6 @@
 ---
 title: "What Makes a Good VLA Dataset? (It’s Not What You Think)"
-date: 2026-04-24
+date: 2026-04-22
 author: justintiensmith & mattpidden
 excerpt: After repeated failures, we shifted focus from models to data, empirically testing how dataset structure, consistency, and variance affect VLA performance.
 ---
