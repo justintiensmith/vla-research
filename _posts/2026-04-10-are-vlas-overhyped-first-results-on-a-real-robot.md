@@ -35,7 +35,7 @@ The initial dataset consisted of **20 teleoperated demonstrations**, collected u
 I initally started with just 20 demonstrations as I was under the impression that would suffice for a VLA to learn a task. You can view the full dataset [here](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_0).
 
 <video controls width="700">
-  <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/apple-dataset-timelapse.MOV" type="video/quicktime">
+  <source src="https://huggingface.co/datasets/mattpidden/smol-vla-test-dataset/resolve/main/videos/apple-dataset-timelapse.mp4" type="video/mp4">
 </video>
 
 <video controls width="700">
@@ -76,7 +76,7 @@ Performance on the real robot was poor:
 
 - the robot consistently failed to grasp the apple  
 - often missed the object entirely  
-- when manually corrected into a grasp, it sometimes moved toward the bowl but dropped the object nearby  
+- when manually corrected into a grasp, it sometimes moved toward the bowl but dropped the object nearby
 
 **Success rate: ~0%**
 
@@ -99,9 +99,22 @@ The goal was to increase demonstration density rather than diversity.
 After fine-tuning on the expanded dataset:
 
 - **~30% success rate (3/10 trials)**  
-- a run was successful if the apple ended in the bowl within 60 seconds  
+- a run was classified as successful if the apple ended in the bowl within 60 seconds  
 
 This was a clear improvement over v1. The model began to complete the full task in some cases, although behaviour was still inconsistent.
+
+<figure>
+  <video controls width="700">
+    <source src="https://huggingface.co/mattpidden/smolvla_apple_policy2/resolve/main/smolvla-apple-succeed.mp4" type="video/mp4">
+  </video>
+  <figcaption>Example of successful task completiion (v2)</figcaption>
+</figure>
+<figure>
+  <video controls width="700">
+    <source src="https://huggingface.co/mattpidden/smolvla_apple_policy2/resolve/main/smolvla-apple-fail.mp4" type="video/mp4">
+  </video>
+  <figcaption>Example of failed task (v2)</figcaption>
+</figure>
 
 ## What Changed?
 
@@ -109,20 +122,113 @@ The main difference wasn’t just more data — it was *more consistent data*.
 
 By reducing spatial variability, the model was better able to learn precise grasp locations rather than a broad, under-specified policy.
 
+## Additional Policies: pi0.5 and ACT
+
+To better understand whether the limitations were specific to SmolVLA or more general, I trained additional policies on the same 50-episode apple dataset.
+
+### pi0.5
+
+I first trained **pi0.5**. I initially attempted to fine-tune pi0 and pi0-fast, but ran into issues getting them to train correctly, so moved to pi0.5, which is also expected to generalise better.
+
+Training was done with the following key flags:
+```
+bash
+--freeze_vision_encoder=false
+--train_expert_only=true
+--steps=40000
+```
+
+In hindsight, these settings were likely suboptimal, as they may have trained the wrong parts of the model.
+
+Inference ran at ~0.2s per step on the RTX 4090. Overall performance was similar to SmolVLA, with a success rate of approximately **~30%**.
+
+However, the behaviour was noticeably different:
+
+- pi0.5 moved **more confidently and decisively**  
+- SmolVLA appeared **slower, more jittery, and hesitant**  
+
+Despite this difference in motion, both models failed in similar ways. The policy would repeatedly attempt to grasp slightly offset from the apple and miss.
+
+### ACT
+
+I also trained an **ACT policy** for 10k steps on the same dataset.
+
+Compared to both SmolVLA and pi0.5:
+
+- motion was **smoother and more stable**  
+- performance was slightly higher at **~40% success**  
+- execution appeared more consistent overall  
+
+## Shared Failure Mode
+
+Across all three models, the same core issue emerged:
+
+- **grasping is the primary bottleneck**  
+- models frequently miss the apple by a small margin  
+- once a grasp fails, they enter a loop:  
+  - re-approach → miss → jitter → repeat  
+- recovery after a failed grasp is rare  
+
+If the object was successfully grasped:
+
+- placing into the bowl was usually successful  
+- overall task success became highly likely  
+
+In practice, this means:
+
+> the first grasp attempt largely determines the outcome of the entire episode
+
+## Hypotheses
+
+There are several possible reasons for the poor grasping performance:
+
+- the apple is relatively large, requiring the gripper to fully open  
+- the surface is reflective, introducing visual ambiguity  
+- the top-down camera provides limited depth information  
+
+A more favourable setup might include:
+
+- a smaller object  
+- a less reflective surface  
+- an angled camera to provide better depth cues  
+
 ## Takeaways
 
-A few things became clear:
+A few key insights emerged from these experiments:
 
-- **20 demonstrations is not enough** for this task or policy  
-- **~50 demonstrations begins to produce usable behaviour**  
-- **grasping is the primary bottleneck**  
-- **dataset consistency matters more than raw diversity**  
+- **Few-shot performance is overstated in practice**  
+  20 demonstrations were not sufficient to learn this task. Even at 50 demonstrations, performance remained inconsistent. VLAs did not exhibit strong few-shot behaviour in this real-world setting.
+
+- **Grasping is the dominant bottleneck**  
+  Across all policies (SmolVLA, pi0.5, ACT), failure was almost always due to inaccurate grasping. Once the object was successfully picked up, task completion was likely.
+
+- **The first action largely determines the outcome**  
+  Policies rarely recover from a failed grasp. Early errors propagate through the rest of the trajectory. A solution to this would be to include different starting points in the training episodes.
+
+- **Policy choice affects behaviour, but not failure mode**  
+  Different models produced noticeably different motion styles (e.g. smooth vs jittery), but all suffered from the same underlying grasping issue.
 
 ## Next Steps
 
-Next, I plan to:
+Based on these findings, the next phase will focus on improving grasp reliability rather than scaling model complexity.
 
-- improve the quality of grasp demonstrations  
-- increase dataset size further  
-- experiment with alternative policies (e.g. pi0.5, ACT)  
-- potentially adjust the camera setup and resolution  
+Planned directions include:
+
+- **Improve demonstration quality**  
+  Focus on more precise and consistent grasping trajectories during data collection.
+
+- **Change the task setup**  
+  - use a smaller, less reflective object  
+  - adjust object placement for easier grasping  
+  - introduce an angled camera to improve depth cues  
+
+- **Increase dataset size**  
+  Collect more demonstrations once the setup is improved, to reinforce reliable grasp behaviour.
+
+- **Explore alternative policies**  
+  Continue experimenting with different architectures (e.g. pi0.5, ACT) under improved data conditions.
+
+- **Investigate perception limitations**  
+  Evaluate whether RGB-only input is sufficient, or if depth (RGB-D) is needed for reliable grasping.
+
+The immediate priority is improving the success rate of the first grasp attempt, as this appears to be the key limiting factor across all experiments.
