@@ -2,3 +2,4 @@ theme: minima
 title: Exploring VLAs on real robots
 description: Weekly updates on our MSc dissertation exploring VLAs, with a focus on real-world benchmarking using the SO-101 robotic arm.
 author: justintiensmith & mattpidden
+show_excerpts: true
