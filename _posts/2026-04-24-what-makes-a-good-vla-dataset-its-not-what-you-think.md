@@ -64,14 +64,12 @@ We collected two new datasets with **100 episodes each**, keeping:
 - consistent lighting conditions  
 - same camera setup (wrist + world camera)
 
-### Dataset 1: Low Variance (Precision-Focused)
+### [Dataset 1](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fmulticolour_block_pick_place_2%2Fepisode_0): Low Variance (Precision-Focused)
 
 - single object: red block  
 - fixed target bin  
 - block constrained to a **10cm × 10cm region**  
 - highly consistent demonstrations  
-
-[View Dataset 1](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fmulticolour_block_pick_place_2%2Fepisode_0)
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
@@ -81,14 +79,12 @@ We collected two new datasets with **100 episodes each**, keeping:
 </div>
 
 
-### Dataset 2: High Variance (Generalisation-Focused)
+### [Dataset 2](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fprecise_multicolour_block_pick_place%2Fepisode_23): High Variance (Generalisation-Focused)
 
 - 4 block colours (25 episodes each)  
 - varying object positions  
 - moving target bin (approx in 20cm × 20cm region)  
 - increased task diversity  
-
-[View Dataset 2](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fprecise_multicolour_block_pick_place%2Fepisode_23)
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
