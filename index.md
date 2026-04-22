@@ -1,6 +1,6 @@
 ---
 layout: home
-title: Home
+title:
 ---
 
 Welcome! We’re Justin and Matt, currently working on our MSc dissertations at Imperial College London.
