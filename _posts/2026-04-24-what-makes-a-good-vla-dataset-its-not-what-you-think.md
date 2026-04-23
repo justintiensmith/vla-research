@@ -163,6 +163,8 @@ This suggests:
 - limited but non-trivial recovery behaviour
 
 ### Model B
+
+
 ### Model C
 Constrained test (10cmx10cm grid red cube)
 Success rate: 100%
@@ -174,25 +176,25 @@ Average Time to complete: 30.4s
 
 Distractor robustness test (anywhere green cube + 2 other random colours)
 Success rate: 80%
-Average Time to complete: 27.8
+Average Time to complete: 27.8s
 
 OOD test (purple cube anywhere + 2 other random colours)
 Success rate: 7/10
-Average Time to complete: 24.8
+Average Time to complete: 24.8s
 
 ### Model D
 Constrained test (10cmx10cm grid red cube)
 Success rate: 90%
-Average Time to complete: 32.1
+Average Time to complete: 32.1s
 
 Spatial test (Anywhere red cube)
-Success rate: 
-Average Time to complete: 
+Success rate: 50%
+Average Time to complete: 28.4s
 
 Distractor robustness test (anywhere green cube + 2 other random colours)
-Success rate:
-Average Time to complete:
+Success rate: 25%
+Average Time to complete: 27.3s
 
 OOD test (purple cube anywhere + 2 other random colours)
-Success rate: 
-Average Time to complete:
+Success rate: 50%
+Average Time to complete: 29.5s
