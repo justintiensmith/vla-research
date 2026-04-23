@@ -97,13 +97,12 @@ We collected two new datasets with **100 episodes each**, keeping:
 
 ## Training
 
-We trained pi0.5 under five different conditions:
+We trained pi0.5 under four different conditions:
 
 - **A)** trained on Dataset 1 only  
 - **B)** trained on Dataset 2 only  
 - **C)** trained on the union of both datasets  
-- **D)** trained on Dataset 1 → then fine-tuned on Dataset 2  
-- **E)** trained on Dataset 2 → then fine-tuned on Dataset 1  
+- **D)** trained on Dataset 1 → then fine-tuned on union of Dataset 1 & 2
 
 This allows us to test:
 - precision vs generalisation  
@@ -118,10 +117,21 @@ Training Parameters for Pi0.5 (TODO)
 
 ### Model A
 
-The first result, trained on **Dataset 1 only (low variance)**, was very revealing:
+Constrained test (10cmx10cm grid red cube)
+Success rate: 90%
+Average Time to complete: 22,25,26,23,22,24,22,28,22
 
-- **100% success rate** on in-distribution tasks  
-- **0% success rate** on out-of-distribution spatial setups
+Spatial test (Anywhere red cube)
+Success rate: 0%
+Average Time to complete: infinity
+
+Distractor robustness test (anywhere green cube + 2 other random colours)
+Success rate: 0%
+Average Time to complete: 
+
+OOD test (purple cube anywhere + 2 other random colours)
+Success rate: 0%
+Average Time to complete: 
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
@@ -154,6 +164,35 @@ This suggests:
 
 ### Model B
 ### Model C
-### Model D
-### Model E
+Constrained test (10cmx10cm grid red cube)
+Success rate: 100%
+Average Time to complete: 24.2s
 
+Spatial test (Anywhere red cube)
+Success rate: 70%
+Average Time to complete: 30.4s
+
+Distractor robustness test (anywhere green cube + 2 other random colours)
+Success rate: 80%
+Average Time to complete: 27.8
+
+OOD test (purple cube anywhere + 2 other random colours)
+Success rate: 7/10
+Average Time to complete: 24.8
+
+### Model D
+Constrained test (10cmx10cm grid red cube)
+Success rate: 90%
+Average Time to complete: 32.1
+
+Spatial test (Anywhere red cube)
+Success rate: 
+Average Time to complete: 
+
+Distractor robustness test (anywhere green cube + 2 other random colours)
+Success rate:
+Average Time to complete:
+
+OOD test (purple cube anywhere + 2 other random colours)
+Success rate: 
+Average Time to complete:
