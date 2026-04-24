@@ -109,9 +109,25 @@ This allows us to test:
 - data mixing vs staged training  
 - effects of curriculum-style learning  
 
-Training Parameters for Pi0.5 (TODO)
-
-
+```bash
+lerobot-train \
+  --dataset.repo_id=justintiensmith/red_block_precision-multicolour_block_pick_place \
+  --policy.type=pi05 \
+  --output_dir=/vol/bitbucket/mdp25/outputs/pi05_5k_precision-multicolour_block_pick_place \
+  --job_name=pi05_training \
+  --policy.pretrained_path=lerobot/pi05_base \
+  --policy.dtype=bfloat16 \
+  --policy.gradient_checkpointing=true \
+  --policy.freeze_vision_encoder=false \
+  --policy.train_expert_only=false \
+  --steps=5000 \
+  --batch_size=32 \
+  --save_freq 1000 \
+  --policy.device=cuda \
+  --policy.repo_id=mattpidden/pi05_5k_precision-multicolour_block_pick_place \
+  --policy.compile_model=false \
+  --policy.normalization_mapping='{"ACTION": "MEAN_STD", "STATE": "MEAN_STD", "VISUAL": "IDENTITY"}'
+```
 
 ## Results 
 
