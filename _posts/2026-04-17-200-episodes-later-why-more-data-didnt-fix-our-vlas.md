@@ -7,46 +7,44 @@ excerpt: We collected a larger 200 episode dataset with better visual setup, but
 
 ## Context
 
-After our initial experiments with VLAs led to disappointment, we decided to run the setup again with a more controlled dataset. We made three key changes: the object was replaced with one better suited to our hardware, the number of demonstrations was significantly increased, and the world camera was repositioned to reduce occlusions during manipulation.
+After our initial experiments with VLAs led to disappointing results, we decided to rerun the setup with a more controlled dataset. This time, we made three deliberate changes: we replaced the object with one better suited to our hardware, increased the number of demonstrations significantly, and adjusted the world camera to reduce occlusions during manipulation.
 
-The previous apple dataset (50 episodes) had already suggested that VLAs struggle with precise manipulation, particularly grasping. However, many successful VLA demos online show strong performance on much more complex tasks, so we wanted to test whether our limitations were simply due to *insufficient data scale*, *task-specific constraints*, or *poor visual setup*.
+The earlier apple dataset (50 episodes) had already hinted that VLAs struggle with precise manipulation, especially grasping. However, since many public demos show strong performance on far more complex tasks, we wanted to test whether our limitations were simply due to insufficient data, poor visual setup, or task specific constraints.
 
-To investigate this, we collected a larger and more structured dataset using Duplo LEGO blocks.
+To investigate this properly, we moved to Duplo LEGO blocks and rebuilt the dataset from scratch.
 
 ## The Setup
 
-We replaced the apple with four coloured Duplo blocks (red, green, blue, yellow), which are more stable and consistent in shape, size, and gripability.
+We replaced the apple with four coloured Duplo blocks (red, green, blue, yellow). These were chosen because they are more stable in shape, size, and grip consistency, which should in theory make the manipulation problem easier.
 
-We also made a key change to the visual setup:
+We also changed the camera configuration. Instead of a strict top-down view, the world camera was moved to a front-facing angled position. This reduced occlusions from the robot arm and improved visibility of the workspace during interaction.
 
-- the world camera was repositioned to a **front-facing angled view** instead of a strict top-down perspective  
-- this reduced occlusions from the robot arm and improved visibility of the workspace  
-
-The goal was to improve both:
-- grasp consistency  
-- visual observability
-- and overall success rate
+Overall, the goal was simple: improve grasp consistency, improve visual observability, and see whether either of those changes would translate into better success rates.
 
 ## New Dataset: 200 Episodes
 
-We collected a total of **200 teleoperated episodes**:
+We collected a total of 200 teleoperated episodes structured evenly across the four block colours:
 
-- 4 block colours (red, green, blue, yellow)  
-- 50 episodes per colour  
-- task: *pick up the specified coloured block and place it in a black pencil bin*  
-- total collection time: ~2 hours  
+- 4 colours (red, green, blue, yellow)
+- 50 episodes per colour
+- task: pick up the specified coloured block and place it in a black pencil bin
+- total collection time: approximately 2 hours
 
-Each instruction explicitly specified the target colour, e.g.:
+Each episode was paired with a language instruction such as:
 
 > “Pick up the red block and place it in the black bin”
 
 Within each colour group, we also included variation in distractors to increase robustness.
 
+Two views were recorded throughout:
+- a world camera with the new angled setup
+- a wrist mounted camera for fine grained manipulation detail
+
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
     <source src="https://huggingface.co/datasets/justintiensmith/multicolour_block_pick_place/resolve/main/videos/observation.images.world/chunk-000/file-000.mp4" type="video/mp4">
   </video>  
-  <p style="color: #666; font-size: 0.9em; margin: 0 0 0 0;">World camera view (note the angle to avoid any occlusions)</p>
+  <p style="color: #666; font-size: 0.9em; margin: 0 0 0 0;">World camera view (note how the angle avoids occlusions)</p>
 </div>
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
@@ -58,87 +56,50 @@ Within each colour group, we also included variation in distractors to increase 
 
 ## Training Experiments
 
-To ensure the results were not an artefact of a specific policy or training setup, we trained multiple models under a range of configurations on the same dataset.
+To ensure results were not tied to a single implementation choice, we trained multiple models on the same dataset under different configurations.
 
-We evaluated three policies:
-- SmolVLA  
-- ACT  
-- pi0.5  
+We evaluated three policies: SmolVLA, ACT, and pi0.5. Across these runs, we varied training steps, freezing strategies, and optimisation settings.
 
-Across these runs, we varied:
-- number of training steps  
-- which parts of the model were frozen during fine-tuning  
-- optimisation and training hyperparameters  
-
-The goal was to test whether performance differences came from the dataset itself, rather than the choice of architecture or training recipe.
+The goal here was to isolate whether performance differences came from the dataset itself or from model architecture and training recipe.
 
 ## Results
 
-Overall, the results were surprising.
+Across all models, the same pattern emerged. Grasping remained the dominant failure mode, and overall success rates stayed low at roughly 30–40%. Increasing dataset size, improving camera placement, and switching to a more stable object did not meaningfully change this outcome.
 
-### General performance
+#### Key observation: pi0.5 generalisation
 
-Across all models:
-- **grasping remained the primary failure mode**
-- success rates stayed low (~30–40%)
-- the same failure pattern persisted: *miss → retry loop → failure*
+One interesting exception was pi0.5. Unlike the other models, it showed noticeably stronger language grounding. It correctly followed colour conditioned instructions and was able to select the correct block even in the presence of distractors.
 
-Increasing dataset size, removing occlusions from world camera, and changing the object did not resolve the core issue.
+In some cases, it also generalised to colour prompts that were not explicitly emphasised during finetuning.
 
-### Key observation: pi0.5 generalisation
-
-One notable exception was **pi0.5**, which showed a different behaviour pattern:
-
-- correctly followed language instructions including **colour conditioning**
-- successfully selected the correct colour block (even in cases with distractors)
-- generalised to colour prompts not explicitly seen in fine tuning data
-
-However:
-- it still frequently failed at the grasping stage  
-
-This suggests that:
-> semantic task understanding improved, but low-level manipulation did not.
+However, this improvement was limited to task understanding. It still failed frequently at the physical grasping stage, suggesting that while semantic grounding improved, low level control did not.
 
 ## Takeaways
 
-A few clear conclusions emerged:
+First, increasing dataset size from 50 to 200 episodes did not resolve the core issue. More data alone was not enough to produce reliable grasping behaviour.
 
-- **Scaling the dataset (50 → 200 episodes) did not fix the core issue**  
-  More data alone was not sufficient to learn reliable grasping.
-  
-- **Consistency of actions is more important than dataset size**  
-  The lack of a single consistent grasping strategy likely limited learning across all models. In our dataset we unintentionally used multiple distinct grasping approaches. For example, in some episodes we rotated the wrist and approached the block in the horizontal plane (see [episode 120](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fmulticolour_block_pick_place%2Fepisode_120%3Ft%3D7)). In other cases, we approached vertically from above with the wrist camera offset to the side (see [episode 150](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fmulticolour_block_pick_place%2Fepisode_150%3Ft%3D19)). This variation in execution meant the policy was effectively learning multiple incompatible solutions to the same task, preventing it from converging on a precise and reliable grasp strategy.
+Second, consistency in action strategy appears to matter far more than raw dataset scale. In hindsight, our demonstrations contained multiple inconsistent grasping styles. Some episodes involved horizontal approaches with wrist rotation (see [episode 120](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fmulticolour_block_pick_place%2Fepisode_120%3Ft%3D7)), while others used a vertical top-down grasp with different camera relative positioning (see [episode 150](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fmulticolour_block_pick_place%2Fepisode_150%3Ft%3D19)). This meant the model was effectively learning multiple conflicting solutions to the same task rather than converging on a single stable strategy.
 
-- **Failure is consistent across architectures**  
-  SmolVLA, ACT, and pi0.5 all shared the same grasping bottleneck.
+Third, the failure mode was shared across architectures. SmolVLA, ACT, and pi0.5 all struggled with the same underlying grasping bottleneck.
 
-- **pi0.5 showed stronger language grounding**  
-  It was the only model that reliably conditioned on colour instructions and generalised beyond training distributions.
+Fourth, pi0.5 stood out for its stronger language grounding. It was the only model that consistently conditioned on colour instructions and generalised beyond strict training distribution constraints.
 
-- **Grasping is still the dominant bottleneck in the system**  
-  Even with improved visual setup and more data, precision manipulation remains unsolved.
+Finally, grasping remains the limiting factor in the system. Even with improved visuals and more data, precise manipulation is still the dominant failure point.
 
 ## Overall Reflection
 
-Despite collecting a significantly larger dataset, this week felt like a lack of progress.
+Despite collecting a significantly larger dataset and improving the experimental setup, progress felt limited this week.
 
-The models are clearly capable of learning:
-- general motion  
-- task structure  
-- language grounding (to some extent)  
-
-But they consistently fail at the same low-level skill: **precise grasping**.
+The models clearly learn certain aspects of the task well, including motion primitives, high level structure, and to some extent language grounding. However, they consistently fail at the same low level skill: precise grasping.
 
 ## Next Steps
 
-Based on these results, the next directions are:
+Based on these results, the next direction is becoming clearer.
 
-- enforce a **single consistent grasping strategy** during data collection (really important)  
-- revisit camera setup (possibly return to top-down but repositioned in front of robot)  
-- start some episodes with the robot arm in varying start states in increase recovery performance
-- investigate why pi0.5 shows better language grounding than other models  
-- focus on improving *action consistency rather than dataset size*
+We need to enforce a single consistent grasping strategy during data collection, as this appears to be a key factor limiting performance. Camera setup should also be revisited, potentially returning to a top-down configuration while improving placement to reduce occlusion issues.
 
-The main takeaway is clear:
+We also want to explore varying initial arm states to improve robustness and recovery behaviour, and investigate why pi0.5 appears to have stronger language grounding than the other models.
 
-> more data did not help, we need consistent action demonstrations
+Most importantly, the focus shifts away from scaling dataset size and towards improving action consistency.
+
+The main takeaway is simple: more data did not help. Consistency did.
