@@ -139,10 +139,11 @@ Next, we evaluated robustness to distractions. The task was changed to picking u
 Finally, we ran an out-of-distribution test. The model was asked to pick up a purple block, which it had never seen during fine-tuning, again in the presence of other coloured distractors. This provides a measure of true generalisation beyond the training distribution.
 
 A summary of the results across all models and test conditions is shown in the table below.
-| Model   | Constrained        | Spatial           | Distractor        | OOD               | AVG               |
+
+| Model   | Constrained       | Spatial           | Distractor        | OOD               | AVG               |
 |:--------|:------------------|:------------------|:------------------|:------------------|:------------------|
 | Model A | 90% (23.8s)       | 0% (n/a)          | 0% (n/a)          | 0% (n/a)          | 23% (23.8s)       |
-| Model B |                   |                   |                   |                   |                   |
+| Model B | 100% (24.2s)      | 70% (30.4s)       | 80% (27.8s)       | 70% (24.8s)       | 80% (26.8s)       |
 | Model C | 100% (24.2s)      | 70% (30.4s)       | 80% (27.8s)       | 70% (24.8s)       | 80% (26.8s)       |
 | Model D | 90% (32.1s)       | 50% (28.4s)       | 25% (27.3s)       | 50% (29.5s)       | 54% (29.3s)       |
 
