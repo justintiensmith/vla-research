@@ -248,3 +248,25 @@ A summary of the results across all models and test conditions is shown in the t
   <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of model D with distractors and prompt "Pick up the purple block and carefully place it in the black bin" running fully autonomously</p>
 </div>
 
+## Evaluation
+
+The differences between the models become much clearer once you look at how performance degrades as the task moves away from the training distribution.
+
+Under constrained conditions, where the red block is limited to the same 10cm × 10cm region seen in Dataset 1, almost all models perform well. Model A achieves a 90% success rate, Model C reaches 100%, and even Model D maintains 90%. This suggests that learning a precise, repeatable behaviour is not the primary challenge—provided the environment closely matches the training setup.
+
+However, this performance does not carry over once spatial variation is introduced. When the red block is allowed to appear anywhere in the reachable workspace, Model A collapses entirely to 0% success. In contrast, Models B, C, and D retain partial capability, achieving 60%, 70%, and 50% respectively. This is the first clear indication that training on a low-variance dataset alone does not produce a robust policy.
+
+The gap widens further in the distractor setting. When the task requires selecting the correct object (green block) in the presence of other coloured blocks, Model C performs best at 80%, followed by Model B at 50%. Model D drops significantly to 25%, while Model A again fails completely. This highlights an important distinction: recognising and acting on task-relevant features (like colour) is closely tied to exposure during training.
+
+The most surprising result comes from the out-of-distribution test. Despite never seeing a purple block during fine-tuning, Models B and C both achieve 70% success. This suggests that these models are not simply memorising colours, but have learned a more general mapping between language and visual features. Model D performs moderately at 50%, while Model A remains at 0%.
+
+Taken together, a few patterns stand out.
+
+- Models trained only on low-variance data (Model A) can achieve high precision, but fail immediately when any variability is introduced.
+- Training on diverse data (Model B) significantly improves robustness across all settings, even without perfect performance.
+- Combining precision and diversity (Model C) produces the strongest overall results, achieving both high success rates and good generalisation. It’s also worth noting that Model C was trained on the union of both datasets, giving it access to a total of 200 episodes, which likely contributes to its advantage over Model B.
+- A staged curriculum (Model D) helps, but does not outperform simply training on the combined dataset in this case.
+
+One subtle but important detail is that average completion times remain relatively stable across models and conditions (roughly 25–30 seconds). Failures are therefore not due to hesitation or inefficiency, but to incorrect actions—most commonly failed grasps or misidentification of the target object.
+
+Overall, the results reinforce a key point: dataset structure matters more than dataset size. Precision-focused data alone leads to brittle policies, while diversity without consistency can limit peak performance. The best results come from combining both in a way that allows the model to first learn a reliable behaviour, and then generalise it.
