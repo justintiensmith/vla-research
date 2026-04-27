@@ -143,7 +143,7 @@ A summary of the results across all models and test conditions is shown in the t
 | Model   | Constrained       | Spatial           | Distractor        | OOD               | AVG               |
 |:--------|:------------------|:------------------|:------------------|:------------------|:------------------|
 | Model A | 90% (23.8s)       | 0% (n/a)          | 0% (n/a)          | 0% (n/a)          | 23% (23.8s)       |
-| Model B | 100% (24.2s)      | 70% (30.4s)       | 80% (27.8s)       | 70% (24.8s)       | 80% (26.8s)       |
+| Model B | 80% (24.0s)       | 60% (28.8s)       | 0% (s)       | 0% (s)       | 0% (s)       |
 | Model C | 100% (24.2s)      | 70% (30.4s)       | 80% (27.8s)       | 70% (24.8s)       | 80% (26.8s)       |
 | Model D | 90% (32.1s)       | 50% (28.4s)       | 25% (27.3s)       | 50% (29.5s)       | 54% (29.3s)       |
 
