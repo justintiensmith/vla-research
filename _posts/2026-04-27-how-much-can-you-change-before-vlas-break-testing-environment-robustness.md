@@ -73,7 +73,7 @@ ACT is the one non-VLA model we tested, and we can see ______ compared to the VL
   <video controls width="100%">
     <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/pi05_grey_mat_lamp.mp4" type="video/mp4">
   </video>
-  <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 with only a background lamp and a grey mat worksurface.</p>
+  <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 with background lamp lighting and a grey mat worksurface.</p>
 </div>
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
@@ -85,5 +85,5 @@ ACT is the one non-VLA model we tested, and we can see ______ compared to the VL
   <video controls width="100%">
     <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/pi05_world_cam_moved.mp4" type="video/mp4">
   </video>
-  <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 a large shift in the world camera poisition and angle.</p>
+  <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 with a large shift in the world camera poisition and angle.</p>
 </div>
