@@ -21,11 +21,13 @@ For our experiments, we established a **Control Experiment** where we ran infere
 
 We defined success as completing the task within 60 seconds. To keep the testing focused, we only placed the block within the 10cm x 10cm "precision" square and used only the red block for all inference runs.
 
+We moved the world camera roughly 2 feet away and then rotated the camera by roughly 30 degree. IT consistantly was able to pick up the block but couldn't place it in the bin; only missed the pick up once. It always dropped it on the right side of the bin and it was close to going in,hitting the rim. It was able to grasp it every time except once.
+
 ### Results
 
 | Model       | Normal Conditions | Lamp | Grey Mat | No Wrist Camera | Orange Arm | Mat + Lamp | Paper Cup | Lamp + Disco Light | Shifted World Camera
 | :---        | :---              | :--- | :---     | :---            | :---       | :---       |:---       |:---                |:---         
-| **Pi0.5**   | 100%              | 100% | 100%     | 40%             | 60%        | 10%        | -%        | 80%                | -%
+| **Pi0.5**   | 100%              | 100% | 100%     | 40%             | 60%        | 10%        | -%        | 80%                | 10%
 | **SmolVLA** | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
 | **GR00T**   | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
 | **X-VLA**   | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
