@@ -1,6 +1,6 @@
 ---
 title: "How Much Can You Change Before VLAs Break? Testing Environment Robustness"
-date: 2026-04-27
+date: 2026-05-01
 author: justintiensmith & mattpidden
 excerpt: We stress-tested our VLA setup by changing the lighting, worksurface, and camera configuration. The results? VLAs are ______.
 ---
@@ -65,7 +65,7 @@ ACT is the one non-VLA model we tested, and we can see ______ compared to the VL
 </div>
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
-    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/pi05_orange_arm.mp4" type="video/mp4">
+    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/pi05_orange.mp4" type="video/mp4">
   </video>
   <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 with an orange SO101 arm.</p>
 </div>
