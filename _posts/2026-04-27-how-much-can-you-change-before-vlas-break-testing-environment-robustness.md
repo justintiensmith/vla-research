@@ -23,12 +23,14 @@ We defined success as completing the task within 60 seconds. To keep the testing
 
 ### Results
 
-| Model | Normal Conditions | Lamp | Spotlight | Grey Mat | No Wrist Camera | Orange Arm | Mat + Lamp |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Pi0.5** | 100% | 100% | -% | 100% | -% | 60% | -% |
-| **SmolVLA** | -% | -% | -% | -% | -% | -% | -% |
-| **ACT** | -% | -% | -% | -% | -% | -% | -% |
-| **Model D** | -% | -% | -% | -% | -% | -% | -% |
+| Model       | Normal Conditions | Lamp | Grey Mat | No Wrist Camera | Orange Arm | Mat + Lamp | Paper Cup | Lamp + Disco Light | Shifted World Camera
+| :---        | :---              | :--- | :---     | :---            | :---       | :---       |:---       |:---                |:---         
+| **Pi0.5**   | 100%              | 100% | 100%     | 40%             | 60%        | 10%        | -%        | 80%                | -%
+| **SmolVLA** | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
+| **GR00T**   | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
+| **X-VLA**   | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
+| **VLA-0**   | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
+| **ACT**     | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
 
 
 ACT is the one non-VLA model we tested, and we can see ______ compared to the VLAs
