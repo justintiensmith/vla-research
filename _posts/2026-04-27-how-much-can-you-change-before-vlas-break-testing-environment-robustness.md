@@ -28,7 +28,7 @@ We moved the world camera roughly 2 feet away and then rotated the camera by rou
 | Model       | Normal Conditions | Lamp | Grey Mat | No Wrist Camera | Orange Arm | Mat + Lamp | Paper Cup | Lamp + Disco Light | Shifted World Camera
 | :---        | :---              | :--- | :---     | :---            | :---       | :---       |:---       |:---                |:---         
 | **Pi0.5**   | 100%              | 100% | 100%     | 40%             | 60%        | 10%        | -%        | 80%                | 10%
-| **SmolVLA** | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
+| **SmolVLA** | 40%               | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
 | **GR00T**   | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
 | **X-VLA**   | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
 | **VLA-0**   | -%                | -%   | -%       | -%              | -%         | -%         | -%        | -%                 | -%
