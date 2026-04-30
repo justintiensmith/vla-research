@@ -11,7 +11,7 @@ One of the primary selling points of VLAs is their ability to generalise across 
 
 ## The Experiment
 
-All of the models we selected were trained on the same dataset to ensure a fair comparison. We used the dataset that provided the best performance across various model architectures in our previous experiment. You can find the dataset here: [lerobot/red_block_precision-multicolour_block_pick_place](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fred_block_precision-multicolour_block_pick_place%2Fepisode_199).
+All of the models we selected were trained on the same dataset to ensure a fair comparison. We used the dataset that provided the best performance across various model architectures in our previous experiment. You can find the dataset [here](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fjustintiensmith%2Fred_block_precision-multicolour_block_pick_place%2Fepisode_199).
 
 The dataset consists of 200 episodes:
 * **Precision Skill (100 episodes):** Picking up a red block within a defined 10cm x 10cm square area.
@@ -41,7 +41,7 @@ ACT is the one non-VLA model we tested, and we can see ______ compared to the VL
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
-    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place_stage2/resolve/main/model_c_test_constrained.mp4" type="video/mp4">
+    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/model_c_test_constrained.mp4" type="video/mp4">
   </video>
   <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 in normal conditions.</p>
 </div>
@@ -53,37 +53,37 @@ ACT is the one non-VLA model we tested, and we can see ______ compared to the VL
 </div>
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
-    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place_stage2/resolve/main/pi05_grey_mat.mp4" type="video/mp4">
+    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/pi05_grey_mat.mp4" type="video/mp4">
   </video>
   <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 with a grey mat instead of wooden worksurface.</p>
 </div>
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
-    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place_stage2/resolve/main/pi05_no_wrist_cam.mp4" type="video/mp4">
+    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/pi05_no_wrist_cam.mp4" type="video/mp4">
   </video>
   <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 with the cap blocking the wrist camera.</p>
 </div>
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
-    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place_stage2/resolve/main/pi05_orange_arm.mp4" type="video/mp4">
+    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/pi05_orange_arm.mp4" type="video/mp4">
   </video>
   <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 with an orange SO101 arm.</p>
 </div>
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
-    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place_stage2/resolve/main/pi05_grey_mat_lamp.mp4" type="video/mp4">
+    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/pi05_grey_mat_lamp.mp4" type="video/mp4">
   </video>
   <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 with only a background lamp and a grey mat worksurface.</p>
 </div>
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
-    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place_stage2/resolve/main/pi05_disco.mp4" type="video/mp4">
+    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/pi05_disco.mp4" type="video/mp4">
   </video>
   <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 with a disco light distractor.</p>
 </div>
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
-    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place_stage2/resolve/main/pi05_world_cam_moved.mp4" type="video/mp4">
+    <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/pi05_world_cam_moved.mp4" type="video/mp4">
   </video>
   <p style="color: #666; font-size: 0.9em; margin: 0;">Evaluation of Pi0.5 a large shift in the world camera poisition and angle.</p>
 </div>
