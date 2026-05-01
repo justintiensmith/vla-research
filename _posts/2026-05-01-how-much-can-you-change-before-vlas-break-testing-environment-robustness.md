@@ -2,7 +2,7 @@
 title: "How Much Can You Change Before VLAs Break? Testing Environment Robustness"
 date: 2026-05-01
 author: justintiensmith & mattpidden
-excerpt: We tested a VLA by changing lighting, camera inputs, and the workspace. The result: strong robustness to visual changes, but surprising fragility to viewpoint and sensor shifts
+excerpt: We tested a VLA by changing lighting, camera inputs, and the workspace. The result is strong robustness to visual changes, but surprising fragility to viewpoint and sensor shifts
 ---
 
 ## Context
