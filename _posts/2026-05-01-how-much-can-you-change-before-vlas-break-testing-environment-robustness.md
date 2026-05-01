@@ -81,7 +81,6 @@ In effect, the model has learned what to look for, but not fully how that relate
 #### Pi0.5
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
-  <p style="color: #666; font-size: 0.7em; margin: 0;">(autonomous x15).</p>
   <video controls width="100%">
     <source src="https://huggingface.co/mattpidden/pi05_5k_precision-multicolour_block_pick_place/resolve/main/model_c_test_constrained.mp4" type="video/mp4">
   </video>
