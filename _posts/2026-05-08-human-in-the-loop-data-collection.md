@@ -1,6 +1,6 @@
 ---
 title: "Exploring Human in the Loop (HIL) Data Collection"
-date: 2026-04-30
+date: 2026-05-08
 author: justintiensmith & mattpidden
 excerpt: We wanted to experiment with HIL
 ---
