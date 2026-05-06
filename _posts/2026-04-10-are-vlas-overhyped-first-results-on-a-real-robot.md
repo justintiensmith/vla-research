@@ -7,7 +7,7 @@ excerpt: Early experiments with VLAs on a real robot suggest that few-shot learn
 
 ## Context
 
-If you watch robotics demos online, Vision-Language Action (VLA) models look like magic. These models are advertised as being able to generalise after a few demonstrations. However, based on preliminary experiments, I found that getting an SO-101 arm to reliably pick and place an apple into a bowl was not as simple as I thought.
+If you watch robotics demos online, Vision-Language Action (VLA) models look very impressive. These models are advertised as being able to generalise after a few demonstrations. However, based on preliminary experiments, I found that getting an SO-101 arm to reliably pick and place an apple into a bowl was not as simple as I thought.
 
 This week I focused on setting up a full end-to-end pipeline: setting up the robot → collecting a dataset → finetuning a VLA → doing real-world inference.
 
