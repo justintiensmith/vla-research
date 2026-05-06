@@ -2,36 +2,36 @@
 title: "Are VLAs Overhyped? First Results on a Real Robot"
 date: 2026-04-10
 author: mattpidden
-excerpt: Early experiments with VLAs on a real robot suggest few-shot learning is overstated, with performance heavily dependent on data quality.
+excerpt: Early experiments with VLAs on a real robot suggest that few-shot learning capabilities are overstated, with performance heavily dependent on data quality.
 ---
 
 ## Context
 
-This week was about getting a full end-to-end pipeline working: robot setup → data collection → training → real-world inference.
+If you watch robotics demos online, Vision-Language Action (VLA) models look like magic. These models are advertised as being able to generalise after a few demonstrations. However, based on preliminary experiments, I found that getting an SO-101 arm to reliably pick and place an apple into a bowl was not as simple as I thought.
 
-The goal was simple: get a Vision-Language Action (VLA) model running on the SO-101 and see how quickly we could get *any* level of real-world performance on a basic pick-and-place task.
+This week I focused on setting up a full end-to-end pipeline: setting up the robot → collecting a dataset → finetuning a VLA → doing real-world inference.
 
 <div style="border-left: 4px solid #4a90e2; background: #f7f9fc; padding: 12px 16px; margin: 20px 0; border-radius: 6px;">
   <strong>What is a Vision-Language Action (VLA) model?</strong>
   <p style="margin-top: 8px;">
-    A VLA is an AI model that takes in images (vision) and a natural language instruction (ie. place apple in bowl), and outputs actions for a robot to execute. 
+    A VLA is an artificial intelligence (AI) model that takes in images (vision) and a natural language instruction (i.e., place the apple in the bowl), and outputs actions for a robot to execute. 
     Instead of explicitly programming the behaviour, the model learns from demonstrations how to map 
-    <em>(what it sees + what it’s told)</em> → <em>what to do next</em>.
+    <em>(what it sees + what it’s told)</em> → <em>what action to take next</em>.
   </p>
   <p style="margin-top: 8px;">
     What makes VLAs particularly interesting is that they build on large pretrained vision and language models, allowing them to generalise across tasks and instructions in ways that traditional imitation learning, reinforcement learning, or classical planning-based robotics systems typically cannot without significant task-specific engineering.
   </p>
   <p style="margin-top: 8px;">
-    In practice, this means collecting teleoperated examples of a task (e.g. pick-and-place), then fine-tuning a pretrained model 
+    To use VLAs in practice, users have to collect teleoperated examples of a task (e.g., pick-and-place) for their specific hardware setup (robot + camera positions), then fine-tune a pretrained model 
     so it can generalise that behaviour to new situations it's never seen before.
   </p>
 </div>
 
 ## The Setup
 
-I set up the open source [SO-101 robot arm](https://huggingface.co/docs/lerobot/en/so101) and followed the LeRobot installation process to create the Python environment. The installation itself was mostly smooth, although getting everything working cleanly on the GPU cluster took some effort later on.
+I set up the open source [SO-101 robot arm](https://huggingface.co/docs/lerobot/en/so101) and followed the LeRobot installation process to create the Python environment. The installation itself was mostly smooth, although getting everything working cleanly on Imperial College's GPU cluster took some effort later on.
 
-After setup, I calibrated the arms (joint limits, motor ranges) using `lerobot-calibrate` CLI command and spent time teleoperating using the leader arm to get comfortable controlling the follower.
+After setup, I calibrated the arms (joint limits, motor ranges) using the `lerobot-calibrate` command line interface (CLI) command and spent time practising teleoperation using the leader arm to get comfortable controlling the follower.
 
 ## The Task
 
@@ -43,12 +43,12 @@ Each episode consisted of a left-to-right pick-and-place motion, with some varia
 
 ## Dataset v1: 20 Episodes
 
-The initial dataset consisted of **20 teleoperated demonstrations**, collected using `lerobot-record` and:
+The initial dataset consisted of **20 teleoperated demonstrations**, collected using `lerobot-record`. The cameras I included are as follows:
 
 - a wrist-mounted camera on the follower arm  
 - a world camera mounted above the workspace (top-down view)
 
-I initally started with just 20 demonstrations as I was under the impression that would suffice for a VLA to learn a task. You can view the full dataset [here](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_0).
+I initially started with just 20 demonstrations as I was under the impression that would suffice for a VLA to learn a task. You can view the full dataset [here](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_0).
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
@@ -76,9 +76,7 @@ The demonstrations were unstructured, with moderate variation in object and targ
 
 I fine-tuned **SmolVLA** using LeRobot.
 
-Training was done on Imperial’s GPU cluster using Slurm. This introduced some friction:
-- dependency issues during setup  
-- occasional out-of-memory errors  
+Training was done on Imperial’s GPU cluster using Slurm. This introduced some friction, including dependency issues during setup and occasional out-of-memory errors.
 
 Eventually, I got training running on an A40 node via the LeRobot CLI with the following command and flags.
 ```bash
@@ -98,21 +96,21 @@ lerobot-train \
 ## Results (v1)
 For inference, I used a local RTX 4090 with a LeRobot async server and a chunk size of 50 with threshold of 0.5. Runtime performance was good (~0.1s per chunk), so latency was not a bottleneck.
 
-Performance on the real robot was poor:
+Performance on the real robot, however, was poor:
 
 - the robot consistently failed to grasp the apple  
 - often missed the object entirely  
-- when manually corrected into a grasp, it sometimes moved toward the bowl but dropped the object nearby
+- when manually corrected into a grasp, it sometimes moved toward the bowl but dropped the object outside the bowl
 
 **Success rate: ~0%**
 
-That said, the behaviour wasn’t random. The model appeared to partially understand the task structure — moving toward the bowl after interacting with the object — but could not execute a reliable grasp.
+That said, the behaviour wasn’t random. The model appeared to partially understand the task structure of moving toward the bowl after interacting with the object, but it could not execute a reliable grasp.
 
 Grasping was clearly the main failure point.
 
 ## Dataset v2: 50 Episodes
 
-After some further reading of other blogs posts I read that to improve performance I needed more and better data. I collected **30 additional episodes** (50 total), with a key change:
+After some further reading of other blog posts, I read that to improve performance, I needed more and better data. I collected **30 additional episodes** (50 total), with a key change:
 
 - reduced task variability  
 - constrained apple and bowl positions to tighter regions  
@@ -122,10 +120,7 @@ The goal was to increase demonstration density rather than diversity.
 
 ## Results (v2)
 
-After fine-tuning on the expanded dataset:
-
-- **~30% success rate (3/10 trials)**  
-- a run was classified as successful if the apple ended in the bowl within 60 seconds  
+After fine-tuning on the expanded dataset, I got a **~30% success rate (3/10 trials)**. I classified a run as successful if the apple ended in the bowl within 60 seconds.
 
 This was a clear improvement over v1. The model began to complete the full task in some cases, although behaviour was still inconsistent.
 
@@ -154,7 +149,7 @@ To better understand whether the limitations were specific to SmolVLA or more ge
 
 ### pi0.5
 
-I first trained **pi0.5**. I initially attempted to fine-tune pi0 and pi0-fast, but ran into issues getting them to train correctly, so moved to pi0.5, which is also expected to generalise better.
+I initially attempted to fine-tune pi0 and pi0-fast, but ran into issues getting them to train correctly, so I moved to pi0.5, which is the newest of Physical Intelligence's open source models and is supposed to generalise better than pi0 and pi0-fast anyways.
 
 Training was done with the following key flags:
 ```bash
@@ -220,10 +215,10 @@ A more favourable setup might include:
 A few key insights emerged from these experiments:
 
 - **Few-shot performance is overstated in practice**  
-  20 demonstrations were not sufficient to learn this task. Even at 50 demonstrations, performance remained inconsistent. VLAs did not exhibit strong few-shot behaviour in this real-world setting. I was genuinely surprised at the poor performance. Online video demonstrations led me to belive VLAs could achieve high success rates with minimal fine tuning for simple task and generalise easily.
+  20 demonstrations were not sufficient to learn this task. Even at 50 demonstrations, performance remained inconsistent. VLAs did not exhibit strong few-shot behaviour in this real-world setting. I was genuinely surprised at the poor performance. Online video demonstrations led me to believe VLAs could achieve high success rates with minimal fine-tuning for simple tasks like pick-and-place and generalise easily.
 
 - **Grasping is the dominant bottleneck**  
-  Across all policies (SmolVLA, pi0.5, ACT), failure was almost always due to inaccurate grasping. Once the object was successfully picked up, task completion was likely.
+  Across each of the policies (SmolVLA, pi0.5, ACT) tested, failure was almost always due to inaccurate grasping. Once the object was successfully picked up, task completion was likely.
 
 - **The first action largely determines the outcome**  
   Policies rarely recover from a failed grasp. Early errors propagate through the rest of the trajectory. A solution to this would be to include different starting points in the training episodes.
