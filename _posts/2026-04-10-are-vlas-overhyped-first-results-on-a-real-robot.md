@@ -7,14 +7,19 @@ excerpt: Early experiments with VLAs on a real robot suggest that few-shot learn
 
 ## Context
 
-If you watch robotics demos online, Vision-Language Action (VLA) models look very impressive. These models are advertised as being able to generalise after a few demonstrations. However, based on preliminary experiments, I found that getting an SO-101 arm to reliably pick and place an apple into a bowl was not as simple as I thought.
+If you watch robotics demos online, Vision-Language Action (VLA) models look very impressive. These models are advertised as being able to generalise after just a few demonstrations. However, based on preliminary experiments, I found that getting an SO-101 arm to reliably pick and place an apple into a bowl was not as simple as I thought.
 
-This week I focused on setting up a full end-to-end pipeline: setting up the robot → collecting a dataset → finetuning a VLA → doing real-world inference.
+This week, I focused on making a full end-to-end pipeline so we could run experiments on different VLAs. This included:
+
+1. Setting up the robot and cameras.
+2. Collecting a dataset.
+3. Writing training scripts to fine-tune VLAs.
+4. Running real-world inference to evaluate success.
 
 <div style="border-left: 4px solid #4a90e2; background: #f7f9fc; padding: 12px 16px; margin: 20px 0; border-radius: 6px;">
   <strong>What is a Vision-Language Action (VLA) model?</strong>
   <p style="margin-top: 8px;">
-    A VLA is an artificial intelligence (AI) model that takes in images (vision) and a natural language instruction (i.e., place the apple in the bowl), and outputs actions for a robot to execute. 
+    A VLA is an artificial intelligence (AI) model that takes in images (vision) and a natural language instruction (i.e., "place the apple in the bowl"), and outputs actions for a robot to execute. 
     Instead of explicitly programming the behaviour, the model learns from demonstrations how to map 
     <em>(what it sees + what it’s told)</em> → <em>what action to take next</em>.
   </p>
@@ -29,7 +34,7 @@ This week I focused on setting up a full end-to-end pipeline: setting up the rob
 
 ## The Setup
 
-I set up the open source [SO-101 robot arm](https://huggingface.co/docs/lerobot/en/so101) and followed the LeRobot installation process to create the Python environment. The installation itself was mostly smooth, although getting everything working cleanly on Imperial College's GPU cluster took some effort later on.
+I set up the open source [SO-101 robot arm](https://huggingface.co/docs/lerobot/en/so101) and followed the LeRobot installation process to create the Python environment. The installation itself was mostly smooth, although getting everything working cleanly on Imperial College's GPU cluster for the finetuning part took some effort later on.
 
 After setup, I calibrated the arms (joint limits, motor ranges) using the `lerobot-calibrate` command line interface (CLI) command and spent time practising teleoperation using the leader arm to get comfortable controlling the follower.
 
@@ -43,12 +48,12 @@ Each episode consisted of a left-to-right pick-and-place motion, with some varia
 
 ## Dataset v1: 20 Episodes
 
-The initial dataset consisted of **20 teleoperated demonstrations**, collected using `lerobot-record`. The cameras I included are as follows:
+The initial dataset consisted of **20 teleoperated demonstrations**, collected using `lerobot-record`. The cameras I included were as follows:
 
 - a wrist-mounted camera on the follower arm  
 - a world camera mounted above the workspace (top-down view)
 
-I initially started with just 20 demonstrations as I was under the impression that would suffice for a VLA to learn a task. You can view the full dataset [here](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_0).
+I initially started with just 20 demonstrations, as I was under the impression that would suffice for a VLA to learn a simple task. You can view the full dataset [here](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fmattpidden%2Fsmol-vla-test-dataset%2Fepisode_0).
 
 <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 20px 0;">
   <video controls width="100%">
