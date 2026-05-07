@@ -58,9 +58,9 @@ We also tested combinations of changes, such as using both the lamp and the grey
 
 ## Results
 
-| Model       | Normal Conditions | Lamp | Grey Mat | No Wrist Camera | Orange Arm | Mat + Lamp | Paper Cup | Lamp + Disco Light | Shifted World Camera
-| :---        | :---              | :--- | :---     | :---            | :---       | :---       |:---       |:---                |:---         
-| **Pi0.5**   | 100%              | 100% | 100%     | 40%             | 60%        | 10%        | -%        | 80%                | 10%
+| Model       | Normal Conditions | Lamp | Grey Mat | No Wrist Camera | Orange Arm | Mat + Lamp | Paper Cup | Lamp + Disco Light | Shifted World Camera | Grey Scale Images  
+| :---        | :---              | :--- | :---     | :---            | :---       | :---       |:---       |:---                |:---        |:---   
+| **Pi0.5**   | 100%              | 100% | 100%     | 40%             | 60%        | 10%        | -%        | 80%                | 10%        | -% 
 
 The results reveal a clear and somewhat unexpected pattern: **not all environmental changes are equal**.
 
