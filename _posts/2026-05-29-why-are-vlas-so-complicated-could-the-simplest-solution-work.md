@@ -2,7 +2,7 @@
 title: "Why are VLAs so Complicated? Could the Simplest Solution Work?"
 date: 2026-05-29
 author: mattpidden
-excerpt: I take a look at VLA-0, a very simple approach of using a VLM for robotic control in a paper from NVIDIA.
+excerpt: A look at VLA-0, a surprisingly simple approach to robotic control that uses a standard vision-language model with no architectural changes, from NVIDIA Research.
 ---
 
 ## Introduction
