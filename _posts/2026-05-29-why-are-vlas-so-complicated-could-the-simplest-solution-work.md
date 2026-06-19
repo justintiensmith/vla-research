@@ -29,7 +29,7 @@ The authors then ask whether there is a simpler approach. They suggest using a V
 
 In this diagram (credit to the original paper), you can see the architecture of VLA-0. It takes 3 input types (images, system prompt, task instruction) and outputs the robot actions directly. 
 
-![VLA-0 Architecture](https://github.com/justintiensmith/vla-research/blob/main/images/vla-0-architecture-diagram.png)
+![VLA-0 Architecture](https://github.com/justintiensmith/vla-research/blob/main/images/vla-0-architecture-diagram.png?raw=true)
 
 ## Methodology
 
@@ -47,11 +47,11 @@ To train the model they perform full fine-tuning of the Qwen VLM (meaning all pa
 
 For simulation benchmarks the authors use the well-known LIBERO benchmark, which contains 1.6k demonstration episodes. The model is evaluated across 40 tasks, across four evaluation suites, with 50 rollouts per task (10 tasks per suite). VLA-0 achieves an average 94.7% success rate across the benchmark. It outperforms all models that do not use large-scale action pretraining on each suite and on average. When compared to models that do use large-scale action pretraining, VLA-0 still performs very well, beating many state-of-the-art models, although notably OpenVLA-OFT does achieve a slightly higher average. Nevertheless, these results are very impressive considering the simplicity VLA-0 offers compared to other VLAs. The full LIBERO results are shown in the figure below (credit to original paper).
 
-![VLA-0 LIBERO Results](https://github.com/justintiensmith/vla-research/blob/main/images/vla-0-libero-results.png)
+![VLA-0 LIBERO Results](https://github.com/justintiensmith/vla-research/blob/main/images/vla-0-libero-results.png?raw=true)
 
 In real-world evaluation, they trained on four tasks with 100 demos per task, for a total of 400 training episodes. The tasks were simple pick-and-place behaviours such as “Place the banana on the plate”. The model performed worse in the real world than in simulation, which is expected behaviour for VLAs, but still outperformed SmolVLA (a VLA from the Hugging Face / LeRobot team), which was exclusively trained on large amounts of SO-100/101 data (the robot embodiment used in evaluation, so in theory SmolVLA had a big advantage). On average, VLA-0 achieved a 60% success rate, whilst SmolVLA achieved 47.5%. These success rates seem reasonable and are in line with our personal experiences described in earlier blogs with the SmolVLA model. The real-world results are shown in the figure below (credit to original paper).
 
-![VLA-0 Real-World Results](https://github.com/justintiensmith/vla-research/blob/main/images/vla-0-real-world-results.png)
+![VLA-0 Real-World Results](https://github.com/justintiensmith/vla-research/blob/main/images/vla-0-real-world-results.png?raw=true)
 
 
 ## Ablation Tests
